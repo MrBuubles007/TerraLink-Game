@@ -114,7 +114,7 @@ export default function PlayerGame() {
                         </GlassCard>
 
                         {/* Decision Buttons Area */}
-                        <div className="flex-1 min-h-0 overflow-y-auto pr-1 space-y-3 pb-4">
+                        <div className="flex-1 min-h-0 overflow-y-auto pr-1 space-y-3 pb-4 w-full max-w-sm mx-auto">
                             {gameState.phase === 'EVENT' ? (
                                 <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-3 py-10">
                                     <div className="w-8 h-8 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>

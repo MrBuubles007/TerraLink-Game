@@ -31,7 +31,37 @@ export default function Whiteboard() {
         }
     }, [gameState?.phase, gameState?.round]);
 
-    if (!gameState) return <div className="min-h-screen bg-black flex items-center justify-center text-white text-4xl">Warte auf Server...</div>;
+    // Custom "Waiting / Connection" Screen defined by User
+    if (!gameState) {
+        return (
+            <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-10 space-y-8">
+                <h1 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-pulse">
+                    TerraLink
+                </h1>
+
+                <div className="bg-white p-8 rounded-3xl shadow-2xl shadow-blue-500/20 transform hover:scale-105 transition-transform duration-500">
+                    <img
+                        src="/qr-code.png"
+                        alt="Join Game QR"
+                        className="w-64 h-64 md:w-96 md:h-96 object-contain"
+                        onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block' }}
+                    />
+                    <div className="hidden text-black text-center p-4">QR-Code fehlt<br />(qr-code.png)</div>
+                </div>
+
+                <div className="text-center space-y-2">
+                    <p className="text-gray-400 text-xl font-medium">Spiel beitreten unter:</p>
+                    <a href="https://terralink-game.onrender.com" className="block text-3xl md:text-5xl font-black text-blue-500 hover:text-blue-400 underline decoration-4 underline-offset-8 transition-colors">
+                        terralink-game.onrender.com
+                    </a>
+                </div>
+
+                <div className="absolute bottom-10 text-gray-600 font-mono text-sm animate-bounce">
+                    Warte auf Server-Verbindung...
+                </div>
+            </div>
+        );
+    }
 
     const formatNumber = (num) => {
         if (num === undefined || num === null) return "0";
@@ -154,121 +184,23 @@ export default function Whiteboard() {
                     const colorHex = colorMap[baseTeam.color] || '#ffffff';
 
                     return (
-                        <GlassCard key={baseTeam.id} className="flex flex-col border-t-4" style={{ borderColor: colorHex }}>
-                            <h2 className="text-2xl font-bold mb-2 truncate flex items-center" style={{ color: colorHex }}>
-                                {/* Logo (tries to load from public/logos/teamID.png) */}
-                                <img
-                                    src={`/logos/${baseTeam.id}.png`}
-                                    alt={baseTeam.name}
-                                    className="w-20 h-20 object-contain mr-4"
-                                    onError={(e) => { e.target.style.display = 'none'; }}
-                                />
-                                {/* Fallback/Icon */}
-                                <span className="mr-2 filter drop-shadow-md text-3xl">{baseTeam.icon}</span>
-                                {baseTeam.name}
-                            </h2>
-                            <div className="flex-1 space-y-6 mt-4">
+                        <GlassCard key={baseTeam.id} className="flex flex-col items-center justify-center border-t-8 h-full min-h-[50vh]" style={{ borderColor: colorHex }}>
+                            {/* Logo */}
+                            <img
+                                src={`/logos/${baseTeam.id}.png`}
+                                alt={baseTeam.name}
+                                className="w-48 h-48 object-contain mb-8 filter drop-shadow-xl hover:scale-110 transition-transform duration-500"
+                                onError={(e) => { e.target.style.display = 'none'; }}
+                            />
 
-                                {/* Capital */}
-                                <div>
-                                    <label className="text-gray-400 text-sm uppercase flex justify-between">
-                                        Kapital
-                                        {liveData.lastChanges?.capital !== undefined && liveData.lastChanges.capital !== 0 && (
-                                            <span className={liveData.lastChanges.capital > 0 ? "text-green-400" : "text-red-400"}>
-                                                {liveData.lastChanges.capital > 0 ? "+" : ""}{liveData.lastChanges.capital}
-                                            </span>
-                                        )}
-                                    </label>
-                                    <div className="text-3xl font-mono relative">
-                                        € {formatNumber(liveData.capital)} {liveData.capitalSuffix || "Mrd."}
-                                        <div className="absolute bottom-0 left-0 h-1 transition-all duration-1000" style={{ width: '100%', backgroundColor: colorHex }}></div>
-                                    </div>
-                                </div>
+                            {/* Emoji Icon */}
+                            <span className="text-8xl filter drop-shadow-lg animate-pulse-slow cursor-default hover:rotate-12 transition-transform">
+                                {baseTeam.icon}
+                            </span>
 
-                                {/* Market Share */}
-                                <div>
-                                    <label className="text-gray-400 text-sm uppercase flex justify-between">
-                                        Marktanteil
-                                        {liveData.lastChanges?.marketShare !== undefined && liveData.lastChanges.marketShare !== 0 && (
-                                            <span className={liveData.lastChanges.marketShare > 0 ? "text-green-400" : "text-red-400"}>
-                                                {liveData.lastChanges.marketShare > 0 ? "+" : ""}{formatNumber(liveData.lastChanges.marketShare)}%
-                                            </span>
-                                        )}
-                                    </label>
-                                    <div className="text-3xl font-mono">{formatNumber(liveData.marketShare)}%</div>
-                                    <div className="w-full bg-gray-700 h-2 mt-2 rounded-full overflow-hidden">
-                                        <div className="h-full transition-all duration-1000" style={{ width: `${liveData.marketShare}%`, backgroundColor: colorHex }}></div>
-                                    </div>
-                                </div>
-
-                                {/* CO2 */}
-                                <div>
-                                    <label className="text-gray-400 text-sm uppercase">CO2-Ausstoß</label>
-                                    <div className={`text-2xl font-bold
-                                   ${liveData.co2 === 'Niedrig' ? 'text-green-400' :
-                                            liveData.co2 === 'Mittel' ? 'text-yellow-400' : 'text-red-500'}
-                               `}>
-                                        {liveData.co2}
-                                    </div>
-                                </div>
-
-                                {/* Analysis / Decision Logic Display - STICKY NOTE STYLE */}
-                                {liveData.lastAnalysis && (
-                                    <div className="mt-6 relative animate-pop-in">
-                                        {/* Sticky Note Container with Gentle Float */}
-                                        <div className="bg-[#fff7d1] text-gray-800 p-6 rounded shadow-lg transform -rotate-1 hover:scale-105 transition-transform duration-300 relative font-serif text-lg leading-relaxed border-b-4 border-r-4 border-black/10 origin-top-left animate-float-gentle">
-
-                                            {/* PIN */}
-                                            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full shadow-md border-2 border-white/50 z-20" style={{ backgroundColor: colorHex }}></div>
-                                            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 w-0.5 h-3 bg-gray-400/50 z-10"></div>
-
-                                            {/* Content */}
-                                            <div className="text-xs font-bold uppercase mb-2 tracking-widest text-gray-500 border-b border-gray-300 pb-1">Analyse der letzten Runde</div>
-                                            <div className="whitespace-pre-line">
-                                                {/* Force client-side update for analysis text if possible, though lastAnalysis comes from server calculation. 
-                                                    Since analysis text is static based on the OPTION chosen, we could technically look it up if we knew WHICH option was chosen.
-                                                    However, liveData.lastAnalysis is a string already. 
-                                                    To fix the 'stale text' issue for analysis, we rely on the server returning the string.
-                                                    If the server is NOT restarted, it sends the OLD string.
-                                                    
-                                                    Workaround: The user wants to see the NEW explanation.
-                                                    But 'lastAnalysis' is just a string from the server.
-                                                    We can't easily reverse-engineer which option was picked to look up the new string 
-                                                    WITHOUT restarting the server or tracking the last vote locally.
-                                                    
-                                                    But wait! The user said "in den Sticky Notes stehen noch die alten Texte".
-                                                    This confirms the server is sending old strings.
-                                                    
-                                                    I can try to find the match in EVENTS by comparing the OLD text (fuzzy match) or just accept that 
-                                                    for *past* rounds it might be old, but for *new* rounds (after I restart server eventually/or if logic shifts) it would be ok.
-                                                    
-                                                    Actually, for the sake of the "Quick Fix", I can't easily change the *past* analysis text 
-                                                    because I don't know which option ID generated it just from the string.
-                                                    
-                                                    BUT, if the server logic determines analysis based on the option Ids (A, B, C...), 
-                                                    and sends that, I'm stuck unless I restart the server.
-                                                    
-                                                    However, the user asked for "Better explanation... and animation".
-                                                    I have added the animation.
-                                                    I have *updated* the source text in initialData.js.
-                                                    Validating: The changes to initialData.js ONLY affect the client if the client uses them.
-                                                    The SERVER imports initialData.js to decide what string to send.
-                                                    So the server MUST be restarted to send the new analysis strings.
-                                                    
-                                                    I will tell the user this limitation or just restart the server?
-                                                    Actually, I am in 'client' mode essentially. I can't restart the server easily if I don't have access to the terminal process of the user?
-                                                    Wait, I do have `run_command`. 
-                                                    
-                                                    But the user's prompt implies they see the *old* text.
-                                                    I will stick to the animation change here.
-                                                */}
-                                                {liveData.lastAnalysis}
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                            </div>
+                            {/* Secretly keeping the name visible only on hover for accessibility/teacher context if needed? 
+                                User said "ONLY logo and emoji". I will stick to that strictly. 
+                            */}
                         </GlassCard>
                     );
                 })}
