@@ -46,112 +46,114 @@ export default function PlayerGame() {
     }, [gameState.round]);
 
     return (
-        <div className="min-h-screen pt-4 px-4 pb-20 text-white font-sans">
-            <div className="flex flex-col gap-4">
 
-                {/* HEADER / STATUS CARD */}
-                <GlassCard className="flex justify-between items-center sticky top-2 z-30 backdrop-blur-md bg-black/40">
-                    <div>
-                        <h2 className="text-2xl font-bold flex items-center gap-2">
-                            <span className="text-3xl">{myTeamData.icon}</span>
-                            {myTeamData.name}
-                        </h2>
-                        <div className="text-xs text-gray-400 flex items-center gap-2">
-                            Runde {gameState.round}
-                            {gameState.phase === 'DECISION' && gameState.timer > 0 && (
-                                <span className="bg-red-600 text-white px-2 rounded animate-pulse font-mono">{gameState.timer}s</span>
-                            )}
+        <div className="h-screen w-screen overflow-hidden text-white font-sans flex flex-col">
+            {/* 1. Header (Fixed Height) */}
+            <header className="flex-none p-2">
+                <GlassCard className="flex justify-between items-center px-4 py-2 bg-black/60 backdrop-blur-md border border-white/10 rounded-full">
+                    <div className="flex items-center gap-3">
+                        <span className="text-2xl">{myTeamData.icon}</span>
+                        <div>
+                            <h2 className="text-sm font-bold leading-tight">{myTeamData.name}</h2>
+                            <div className="text-[10px] text-gray-400">Runde {gameState.round}</div>
                         </div>
                     </div>
                     <div className="text-right">
-                        <div className="text-xl font-mono text-green-400">€ {formatNumber(liveTeamStats.capital)} {liveTeamStats.capitalSuffix || "Mrd."}</div>
-                        <div className="text-xs text-gray-400">Marktanteil: {formatNumber(liveTeamStats.marketShare)}%</div>
+                        <div className="text-sm font-mono text-green-400 font-bold">€ {formatNumber(liveTeamStats.capital)} {liveTeamStats.capitalSuffix || "Mrd."}</div>
+                        <div className="text-[10px] text-gray-400">Markt: {formatNumber(liveTeamStats.marketShare)}%</div>
                     </div>
                 </GlassCard>
+            </header>
 
-                {/* Main Content Area */}
-                <div className="max-w-2xl mx-auto">
+            {/* 2. Main Content (Flex Grow - takes remaining space) */}
+            <main className="flex-1 min-h-0 flex flex-col justify-center px-4 py-2 relative">
 
-                    {/* ENHANCED BRIEFING / LOBBY */}
-                    {gameState.phase === 'LOBBY' && (
-                        <GlassCard className="animate-fade-in text-center">
-                            <h1 className="text-4xl font-bold mb-2" style={{ color: teamColorHex }}>{myTeamData.name}</h1>
-                            <div className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-6">{myTeamData.type}</div>
+                {/* TIMER OVERLAY (If active) */}
+                {gameState.phase === 'DECISION' && gameState.timer > 0 && (
+                    <div className="absolute top-0 right-4 -mt-2 z-20">
+                        <span className="bg-red-600/90 text-white text-xs px-2 py-1 rounded-b-lg animate-pulse font-mono shadow-lg border border-red-400/50">
+                            ⏱ {gameState.timer}s
+                        </span>
+                    </div>
+                )}
 
-                            <div className="bg-black/30 p-6 rounded-xl mb-6 text-left border-l-4 border-gray-500">
-                                <p className="text-lg leading-relaxed text-gray-200">{myTeamData.briefing}</p>
+                {/* SCENARIO: LOBBY */}
+                {gameState.phase === 'LOBBY' && (
+                    <GlassCard className="flex flex-col items-center justify-center text-center h-full max-h-[80vh]">
+                        <h1 className="text-2xl font-bold mb-1" style={{ color: teamColorHex }}>{myTeamData.name}</h1>
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-4">{myTeamData.type}</div>
+
+                        <div className="bg-black/30 p-3 rounded-lg mb-4 text-left border-l-2 border-gray-500 overflow-y-auto max-h-[40vh]">
+                            <p className="text-xs leading-relaxed text-gray-200">{myTeamData.briefing}</p>
+                        </div>
+
+                        <div className="text-yellow-400 animate-pulse font-bold text-sm">
+                            Warte auf Spielstart...
+                        </div>
+                    </GlassCard>
+                )}
+
+                {/* SCENARIO: EVENT & DECISION */}
+                {(gameState.phase === 'EVENT' || gameState.phase === 'DECISION') && (
+                    <div className="h-full flex flex-col gap-2">
+                        {/* News Teaser */}
+                        <GlassCard className="flex-none bg-red-900/10 border-red-500/20 p-3">
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className="text-[10px] font-bold bg-red-600 text-white px-1.5 py-0.5 rounded">BREAKING</span>
+                                <h2 className="text-sm font-bold text-gray-100 truncate w-full">
+                                    {EVENTS.find(e => e.id === gameState.currentEvent?.id)?.title || gameState.currentEvent?.title}
+                                </h2>
                             </div>
-
-                            <div className="grid grid-cols-2 gap-4 mb-6">
-                                <div className="bg-white/5 p-4 rounded">
-                                    <div className="text-gray-400 text-xs uppercase">Startkapital</div>
-                                    <div className="text-2xl font-mono text-green-400">€ {formatNumber(liveTeamStats.capital)} {liveTeamStats.capitalSuffix || "Mrd."}</div>
-                                </div>
-                                <div className="bg-white/5 p-4 rounded">
-                                    <div className="text-gray-400 text-xs uppercase">Marktanteil</div>
-                                    <div className="text-2xl font-mono text-blue-400">{formatNumber(liveTeamStats.marketShare)}%</div>
-                                </div>
-                            </div>
-
-                            <div className="text-yellow-400 animate-pulse font-bold">
-                                Warte auf Spielstart durch Admin...
-                            </div>
-                        </GlassCard>
-                    )}
-
-                    {gameState.phase === 'EVENT' && (
-                        <GlassCard className="animate-fade-in-up">
-                            <div className="bg-red-500/20 text-red-200 px-3 py-1 rounded inline-block text-sm mb-4 font-bold tracking-wider">BREAKING NEWS</div>
-                            {/* Force Client-Side Text Update (HMR) for Title/Desc */}
-                            <h2 className="text-3xl font-bold mb-4">
-                                {EVENTS.find(e => e.id === gameState.currentEvent?.id)?.title || gameState.currentEvent?.title}
-                            </h2>
-                            <p className="text-lg text-gray-300 leading-relaxed">
+                            <p className="text-xs text-gray-300 leading-snug line-clamp-3">
                                 {EVENTS.find(e => e.id === gameState.currentEvent?.id)?.description || gameState.currentEvent?.description}
                             </p>
-                            <div className="mt-8 text-center text-gray-400 animate-pulse">
-                                Warte auf Entscheidungsmöglichkeiten...
-                            </div>
                         </GlassCard>
-                    )}
 
-                    {gameState.phase === 'DECISION' && (
-                        <div className="space-y-4">
-                            <h2 className="text-xl font-bold mb-4 text-center">Entscheide jetzt!</h2>
-                            {gameState.currentEvent?.options.map((opt) => {
-                                // Force Client-Side Text Update (HMR)
-                                // Look up the option in the local EVENTS array to get the simplified text
-                                // This fixes the "Server Stale State" issue without restart
-                                const localEvent = EVENTS.find(e => e.id === gameState.currentEvent.id);
-                                const localOption = localEvent?.options.find(o => o.id === opt.id);
-                                const displayText = localOption ? localOption.text : opt.text;
+                        {/* Decision Buttons Area */}
+                        <div className="flex-1 min-h-0 overflow-y-auto pr-1 space-y-2">
+                            {gameState.phase === 'EVENT' ? (
+                                <div className="h-full flex items-center justify-center text-gray-500 animate-pulse text-sm">
+                                    Optionen werden geladen...
+                                </div>
+                            ) : (
+                                gameState.currentEvent?.options.map((opt) => {
+                                    const localEvent = EVENTS.find(e => e.id === gameState.currentEvent.id);
+                                    const localOption = localEvent?.options.find(o => o.id === opt.id);
+                                    const displayText = localOption ? localOption.text : opt.text;
 
-                                return (
-                                    <button
-                                        key={opt.id}
-                                        disabled={hasVoted}
-                                        onClick={() => handleVote(opt.id)}
-                                        className={`w-full text-left p-4 rounded-xl transition-all duration-200 border border-white/10
-                                    ${hasVoted ? 'opacity-50 cursor-not-allowed bg-gray-800' : 'bg-white/5 hover:bg-white/10 hover:border-white/30 active:scale-[0.98]'}
-                                `}
-                                    >
-                                        <span className="font-bold text-lg text-yellow-400 mr-3">{opt.id}</span>
-                                        <span className="text-gray-200">{displayText}</span>
-                                    </button>
-                                );
-                            })}
+                                    return (
+                                        <button
+                                            key={opt.id}
+                                            disabled={hasVoted}
+                                            onClick={() => handleVote(opt.id)}
+                                            className={`w-full text-left p-2.5 rounded-lg transition-all duration-200 border border-white/10 flex items-start gap-3
+                                                ${hasVoted
+                                                    ? 'opacity-50 cursor-not-allowed bg-gray-800'
+                                                    : 'bg-white/5 hover:bg-white/10 active:scale-[0.99] hover:border-yellow-400/30'
+                                                }
+                                            `}
+                                        >
+                                            <div className="flex-none bg-yellow-400/10 text-yellow-400 font-bold w-6 h-6 flex items-center justify-center rounded text-xs border border-yellow-400/20">
+                                                {opt.id}
+                                            </div>
+                                            <span className="text-xs text-gray-200 leading-snug py-0.5">{displayText}</span>
+                                        </button>
+                                    );
+                                })
+                            )}
                         </div>
-                    )}
+                    </div>
+                )}
 
-                    {gameState.phase === 'RESULT' && (
-                        <GlassCard className="text-center py-10">
-                            <h2 className="text-2xl font-bold text-gray-200 mb-2">Auswertung läuft...</h2>
-                            <p className="text-gray-400">Bitte schaue auf das Whiteboard.</p>
-                        </GlassCard>
-                    )}
-
-                </div>
-            </div>
+                {/* SCENARIO: RESULT */}
+                {gameState.phase === 'RESULT' && (
+                    <GlassCard className="text-center py-6">
+                        <h2 className="text-lg font-bold text-gray-200 mb-2">Auswertung läuft...</h2>
+                        <div className="animate-spin text-2xl mb-2">⏳</div>
+                        <p className="text-xs text-gray-400">Blick zum Whiteboard!</p>
+                    </GlassCard>
+                )}
+            </main>
         </div>
     );
 }

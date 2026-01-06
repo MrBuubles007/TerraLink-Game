@@ -9,18 +9,22 @@ import Whiteboard from './pages/Whiteboard';
 import CyberpunkBackground from './components/ui/CyberpunkBackground';
 import Footer from './components/layout/Footer';
 
+import LandscapeGuard from './components/ui/LandscapeGuard';
+
 export default function App() {
   return (
     <GameProvider>
       <Router>
         <CyberpunkBackground>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/lobby" element={<Lobby />} />
-            <Route path="/game" element={<PlayerGame />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/whiteboard" element={<Whiteboard />} />
-          </Routes>
+          <LandscapeGuard>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/lobby" element={<Lobby />} />
+              <Route path="/game" element={<PlayerGame />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/whiteboard" element={<Whiteboard />} />
+            </Routes>
+          </LandscapeGuard>
           <Footer />
         </CyberpunkBackground>
       </Router>
