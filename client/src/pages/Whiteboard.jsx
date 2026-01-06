@@ -186,15 +186,15 @@ export default function Whiteboard() {
                     return (
                         <GlassCard key={baseTeam.id} className="flex flex-col border-t-8 h-full" style={{ borderColor: colorHex }}>
 
-                            {/* HEADER: Logo & Emoji Only (Centered) */}
-                            <div className="flex flex-col items-center justify-center border-b border-white/10 pb-6 mb-4">
+                            {/* HEADER: Logo & Emoji Side-by-Side (Centered) */}
+                            <div className="flex flex-row items-center justify-center gap-6 border-b border-white/10 pb-4 mb-4">
                                 <img
                                     src={`/logos/${baseTeam.id}.png`}
                                     alt={baseTeam.name}
-                                    className="w-32 h-32 object-contain mb-4 filter drop-shadow-lg hover:scale-105 transition-transform"
+                                    className="w-24 h-24 object-contain filter drop-shadow-lg hover:scale-105 transition-transform"
                                     onError={(e) => { e.target.style.display = 'none'; }}
                                 />
-                                <span className="text-6xl filter drop-shadow-md cursor-default hover:rotate-6 transition-transform">
+                                <span className="text-5xl filter drop-shadow-md cursor-default hover:rotate-6 transition-transform">
                                     {baseTeam.icon}
                                 </span>
                             </div>
