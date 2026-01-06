@@ -50,7 +50,7 @@ export default function PlayerGame() {
         <div className="h-screen w-screen overflow-hidden text-white font-sans flex flex-col">
             {/* 1. Header (Fixed Height) */}
             <header className="flex-none p-2 z-10">
-                <GlassCard className="flex justify-between items-center px-4 py-2 bg-black/60 backdrop-blur-md border border-white/10 rounded-full max-w-lg mx-auto w-full">
+                <GlassCard className="flex justify-between items-center px-4 py-2 bg-black/60 backdrop-blur-md border border-white/10 rounded-full w-full md:w-3/4 mx-auto shadow-lg">
                     <div className="flex items-center gap-3">
                         <span className="text-2xl">{myTeamData.icon}</span>
                         <div>
@@ -66,7 +66,7 @@ export default function PlayerGame() {
             </header>
 
             {/* 2. Main Content (Flex Grow - takes remaining space) */}
-            <main className="flex-1 min-h-0 flex flex-col px-4 pb-4 max-w-lg mx-auto w-full relative gap-3">
+            <main className="flex-1 min-h-0 flex flex-col px-4 pb-4 w-full md:w-3/4 mx-auto relative gap-3">
 
                 {/* TIMER OVERLAY */}
                 {gameState.phase === 'DECISION' && gameState.timer > 0 && (
