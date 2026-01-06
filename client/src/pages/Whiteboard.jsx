@@ -184,23 +184,82 @@ export default function Whiteboard() {
                     const colorHex = colorMap[baseTeam.color] || '#ffffff';
 
                     return (
-                        <GlassCard key={baseTeam.id} className="flex flex-col items-center justify-center border-t-8 h-full min-h-[50vh]" style={{ borderColor: colorHex }}>
-                            {/* Logo */}
-                            <img
-                                src={`/logos/${baseTeam.id}.png`}
-                                alt={baseTeam.name}
-                                className="w-48 h-48 object-contain mb-8 filter drop-shadow-xl hover:scale-110 transition-transform duration-500"
-                                onError={(e) => { e.target.style.display = 'none'; }}
-                            />
+                        <GlassCard key={baseTeam.id} className="flex flex-col border-t-8 h-full" style={{ borderColor: colorHex }}>
 
-                            {/* Emoji Icon */}
-                            <span className="text-8xl filter drop-shadow-lg animate-pulse-slow cursor-default hover:rotate-12 transition-transform">
-                                {baseTeam.icon}
-                            </span>
+                            {/* HEADER: Logo & Emoji Only (Centered) */}
+                            <div className="flex flex-col items-center justify-center border-b border-white/10 pb-6 mb-4">
+                                <img
+                                    src={`/logos/${baseTeam.id}.png`}
+                                    alt={baseTeam.name}
+                                    className="w-32 h-32 object-contain mb-4 filter drop-shadow-lg hover:scale-105 transition-transform"
+                                    onError={(e) => { e.target.style.display = 'none'; }}
+                                />
+                                <span className="text-6xl filter drop-shadow-md cursor-default hover:rotate-6 transition-transform">
+                                    {baseTeam.icon}
+                                </span>
+                            </div>
 
-                            {/* Secretly keeping the name visible only on hover for accessibility/teacher context if needed? 
-                                User said "ONLY logo and emoji". I will stick to that strictly. 
-                            */}
+                            {/* STATS & DATA (Restored) */}
+                            <div className="flex-1 space-y-5">
+
+                                {/* Capital */}
+                                <div>
+                                    <label className="text-gray-400 text-xs uppercase flex justify-between font-bold tracking-wider">
+                                        Kapital
+                                        {liveData.lastChanges?.capital !== undefined && liveData.lastChanges.capital !== 0 && (
+                                            <span className={liveData.lastChanges.capital > 0 ? "text-green-400" : "text-red-400"}>
+                                                {liveData.lastChanges.capital > 0 ? "+" : ""}{liveData.lastChanges.capital}
+                                            </span>
+                                        )}
+                                    </label>
+                                    <div className="text-2xl font-mono relative font-bold text-gray-100 mt-1">
+                                        € {formatNumber(liveData.capital)} {liveData.capitalSuffix || "Mrd."}
+                                        <div className="absolute bottom-0 left-0 h-0.5 transition-all duration-1000 opacity-50" style={{ width: '100%', backgroundColor: colorHex }}></div>
+                                    </div>
+                                </div>
+
+                                {/* Market Share */}
+                                <div>
+                                    <label className="text-gray-400 text-xs uppercase flex justify-between font-bold tracking-wider">
+                                        Marktanteil
+                                        {liveData.lastChanges?.marketShare !== undefined && liveData.lastChanges.marketShare !== 0 && (
+                                            <span className={liveData.lastChanges.marketShare > 0 ? "text-green-400" : "text-red-400"}>
+                                                {liveData.lastChanges.marketShare > 0 ? "+" : ""}{formatNumber(liveData.lastChanges.marketShare)}%
+                                            </span>
+                                        )}
+                                    </label>
+                                    <div className="text-2xl font-mono font-bold text-gray-100 mt-1">{formatNumber(liveData.marketShare)}%</div>
+                                    <div className="w-full bg-gray-800 h-1.5 mt-2 rounded-full overflow-hidden border border-white/5">
+                                        <div className="h-full transition-all duration-1000" style={{ width: `${liveData.marketShare}%`, backgroundColor: colorHex }}></div>
+                                    </div>
+                                </div>
+
+                                {/* CO2 */}
+                                <div>
+                                    <label className="text-gray-400 text-xs uppercase font-bold tracking-wider">CO2-Ausstoß</label>
+                                    <div className={`text-xl font-bold mt-1
+                                   ${liveData.co2 === 'Niedrig' ? 'text-green-400' :
+                                            liveData.co2 === 'Mittel' ? 'text-yellow-400' : 'text-red-500'}
+                               `}>
+                                        {liveData.co2}
+                                    </div>
+                                </div>
+
+                                {/* Analysis Sticky Note */}
+                                {liveData.lastAnalysis && (
+                                    <div className="mt-4 relative animate-pop-in">
+                                        <div className="bg-[#fff7d1] text-gray-800 p-4 rounded shadow-lg transform -rotate-1 hover:scale-105 transition-transform duration-300 relative font-serif text-base leading-relaxed border-b-2 border-r-2 border-black/10 origin-top-left animate-float-gentle">
+                                            {/* PIN */}
+                                            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 w-3 h-3 rounded-full shadow border border-white/50 z-20" style={{ backgroundColor: colorHex }}></div>
+
+                                            <div className="text-[10px] font-bold uppercase mb-1 tracking-widest text-gray-500 border-b border-gray-300 pb-0.5">Analyse</div>
+                                            <div className="whitespace-pre-line text-sm">
+                                                {liveData.lastAnalysis}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </GlassCard>
                     );
                 })}
