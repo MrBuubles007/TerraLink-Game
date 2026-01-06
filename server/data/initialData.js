@@ -1,4 +1,4 @@
-export const TEAMS = [
+const TEAMS = [
     {
         id: "megalogistics",
         name: "MegaLogistics Corp.",
@@ -49,7 +49,7 @@ export const TEAMS = [
     }
 ];
 
-export const EVENTS = [
+const EVENTS = [
     {
         id: 1,
         title: "Blockade im Suez-Kanal",
@@ -471,3 +471,5 @@ export const EVENTS = [
         ]
     }
 ];
+
+module.exports = { TEAMS, EVENTS };
