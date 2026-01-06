@@ -95,25 +95,30 @@ export default function PlayerGame() {
 
                 {/* SCENARIO: EVENT & DECISION */}
                 {(gameState.phase === 'EVENT' || gameState.phase === 'DECISION') && (
-                    <div className="h-full flex flex-col gap-2">
+                    <div className="h-full flex flex-col gap-4">
                         {/* News Teaser */}
-                        <GlassCard className="flex-none bg-red-900/10 border-red-500/20 p-3">
-                            <div className="flex items-center gap-2 mb-1">
-                                <span className="text-[10px] font-bold bg-red-600 text-white px-1.5 py-0.5 rounded">BREAKING</span>
-                                <h2 className="text-sm font-bold text-gray-100 truncate w-full">
-                                    {EVENTS.find(e => e.id === gameState.currentEvent?.id)?.title || gameState.currentEvent?.title}
-                                </h2>
+                        <GlassCard className="flex-none bg-red-900/20 border-red-500/30 p-5 rounded-2xl text-center shadow-lg relative overflow-hidden group">
+                            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-50"></div>
+
+                            <div className="inline-block bg-red-600/90 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded-full mb-3 tracking-widest shadow-red-500/50 shadow-sm animate-pulse">
+                                Breaking News
                             </div>
-                            <p className="text-xs text-gray-300 leading-snug line-clamp-3">
+
+                            <h2 className="text-xl md:text-2xl font-bold text-gray-100 leading-tight mb-3 drop-shadow-md">
+                                {EVENTS.find(e => e.id === gameState.currentEvent?.id)?.title || gameState.currentEvent?.title}
+                            </h2>
+
+                            <p className="text-sm md:text-base text-gray-300 leading-relaxed font-medium">
                                 {EVENTS.find(e => e.id === gameState.currentEvent?.id)?.description || gameState.currentEvent?.description}
                             </p>
                         </GlassCard>
 
                         {/* Decision Buttons Area */}
-                        <div className="flex-1 min-h-0 overflow-y-auto pr-1 space-y-2">
+                        <div className="flex-1 min-h-0 overflow-y-auto pr-1 space-y-3 pb-4">
                             {gameState.phase === 'EVENT' ? (
-                                <div className="h-full flex items-center justify-center text-gray-500 animate-pulse text-sm">
-                                    Optionen werden geladen...
+                                <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-3 py-10">
+                                    <div className="w-8 h-8 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+                                    <span className="text-sm font-medium animate-pulse">Optionen werden geladen...</span>
                                 </div>
                             ) : (
                                 gameState.currentEvent?.options.map((opt) => {
@@ -126,17 +131,23 @@ export default function PlayerGame() {
                                             key={opt.id}
                                             disabled={hasVoted}
                                             onClick={() => handleVote(opt.id)}
-                                            className={`w-full text-left p-2.5 rounded-lg transition-all duration-200 border border-white/10 flex items-start gap-3
+                                            className={`w-full relative group overflow-hidden p-4 rounded-xl transition-all duration-300 border flex flex-col items-center gap-2 text-center shadow-lg
                                                 ${hasVoted
-                                                    ? 'opacity-50 cursor-not-allowed bg-gray-800'
-                                                    : 'bg-white/5 hover:bg-white/10 active:scale-[0.99] hover:border-yellow-400/30'
+                                                    ? 'opacity-50 cursor-not-allowed bg-gray-800 border-gray-700 grayscale'
+                                                    : 'bg-gradient-to-br from-white/10 to-white/5 border-white/10 hover:border-yellow-400/50 hover:bg-white/15 hover:scale-[1.02] active:scale-[0.98]'
                                                 }
                                             `}
                                         >
-                                            <div className="flex-none bg-yellow-400/10 text-yellow-400 font-bold w-6 h-6 flex items-center justify-center rounded text-xs border border-yellow-400/20">
+                                            {/* Selection Indicator */}
+                                            <div className="absolute top-3 left-3 bg-yellow-400/20 text-yellow-400 font-bold w-6 h-6 flex items-center justify-center rounded-lg text-xs border border-yellow-400/40 opacity-70 group-hover:opacity-100 transition-opacity">
                                                 {opt.id}
                                             </div>
-                                            <span className="text-xs text-gray-200 leading-snug py-0.5">{displayText}</span>
+
+                                            <span className="text-base text-gray-100 font-medium leading-normal w-full mt-1 px-2">{displayText}</span>
+
+                                            {!hasVoted && (
+                                                <div className="mt-1 h-0.5 w-0 bg-yellow-400/50 group-hover:w-1/3 transition-all duration-500 rounded-full"></div>
+                                            )}
                                         </button>
                                     );
                                 })
