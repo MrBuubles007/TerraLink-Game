@@ -319,7 +319,35 @@ function gameLoopNext() {
         if (gameState.round > EVENTS.length) {
             gameState.phase = 'END';
             gameState.displayNews = "SPIEL VORBEI! Auswertung...";
-            // ... (End game calculation remains same) ...
+
+            // Calculate Scores
+            gameState.finalRanking = gameState.teamStats.map(team => {
+                const initial = TEAMS.find(t => t.id === team.id);
+
+                // Capital Growth %
+                let capGrowth = 0;
+                if (initial.capital > 0) {
+                    capGrowth = ((team.capital - initial.capital) / initial.capital) * 100;
+                }
+
+                // Market Share Growth %
+                let marketGrowth = 0;
+                if (initial.marketShare > 0) {
+                    marketGrowth = ((team.marketShare - initial.marketShare) / initial.marketShare) * 100;
+                }
+
+                // Total Score = Simple Sum of % Growths
+                const totalScore = capGrowth + marketGrowth;
+
+                return {
+                    ...team,
+                    capitalGrowth: Math.round(capGrowth * 10) / 10,
+                    marketGrowth: Math.round(marketGrowth * 10) / 10,
+                    totalScore: Math.round(totalScore)
+                };
+            }).sort((a, b) => b.totalScore - a.totalScore); // Sort descending
+
+            gameState.displayNews = `SIEGER: ${gameState.finalRanking[0].name}`;
         } else {
             gameState.phase = 'EVENT';
             gameState.currentEvent = EVENTS[(gameState.round - 1) % EVENTS.length];
