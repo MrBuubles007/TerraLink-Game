@@ -283,6 +283,9 @@ function gameLoopNext() {
                     const noise = (Math.random() * 3) - 1.5;
                     let proposedChange = marketChange + noise;
 
+                    // Store old value to calculate ACTUAL change after clamping
+                    const oldMarketShare = team.marketShare;
+
                     // LOGIC FIX: Cannot lose more than you have
                     // If proposedChange is -50 but share is 10, actual change is -10.
                     if (proposedChange < 0 && Math.abs(proposedChange) > team.marketShare) {
@@ -294,12 +297,14 @@ function gameLoopNext() {
 
                     // Clamp Market Share (Double check) & Floor at 2% if they had >2% before
                     // User Request: Never drop below 2% (insolvency protection)
-                    // If they are already below 2? We just clamp at 0 or 2. Let's clamp at 2 as minimum survival.
                     if (team.marketShare < 2) team.marketShare = 2;
 
                     // Round to 1 decimal
                     team.marketShare = Math.round(team.marketShare * 10) / 10;
-                    team.lastChanges.marketShare = Math.round(proposedChange * 10) / 10;
+
+                    // Calculate the EFFECTIVE change
+                    const actualChange = team.marketShare - oldMarketShare;
+                    team.lastChanges.marketShare = Math.round(actualChange * 10) / 10;
 
                     // ANALYSIS GENERATION
                     const decisionText = `Option ${winningOptionId}: ${option.text}`;

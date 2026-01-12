@@ -2,7 +2,18 @@ import React from 'react';
 import CyberpunkBackground from './CyberpunkBackground';
 
 export default function Podium({ ranking }) {
-    if (!ranking) return null;
+    // Robustness: If ranking is missing or empty, show loading instead of nothing
+    if (!ranking || ranking.length === 0) {
+        return (
+            <CyberpunkBackground>
+                <div className="flex items-center justify-center min-h-screen">
+                    <div className="text-2xl font-bold text-yellow-400 animate-pulse">
+                        Warte auf Ergebnisse...
+                    </div>
+                </div>
+            </CyberpunkBackground>
+        );
+    }
 
     const top3 = ranking.slice(0, 3);
     const rest = ranking.slice(3);
@@ -89,7 +100,7 @@ export default function Podium({ ranking }) {
                                     <div className="absolute inset-0 bg-[url('https://media.giphy.com/media/dummy/giphy.gif')] opacity-5 pointer-events-none rounded-xl overflow-hidden"></div>
 
                                     {/* Trophy Icon - Adjusted position to not be cut off */}
-                                    <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 text-6xl md:text-7xl animate-bounce filter drop-shadow-lg"
+                                    <div className="absolute -top-10 left-[45%] transform -translate-x-1/2 text-6xl md:text-7xl animate-bounce filter drop-shadow-lg"
                                         style={{ animationDelay: `${index * 0.2}s`, zIndex: 40 }}>
                                         {trophy}
                                     </div>
