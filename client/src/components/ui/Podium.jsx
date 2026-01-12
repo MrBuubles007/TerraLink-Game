@@ -38,19 +38,14 @@ export default function Podium({ ranking }) {
             <div className="flex flex-col items-center justify-center min-h-screen w-full relative overflow-y-auto pt-10 pb-10">
 
                 {/* Confetti Overlay */}
-                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
                     {confettiPieces}
                 </div>
 
-                <h1 className="text-4xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600 mb-8 md:mb-16 animate-pulse drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] text-center tracking-tighter"
-                    style={{ fontFamily: '"Courier New", monospace' }}>
-                    &lt; SYSTEM_WINNER /&gt;
-                </h1>
-
-                <div className="flex flex-col md:flex-row gap-6 items-end justify-center w-full max-w-7xl mb-12 relative z-20 px-4">
+                <div className="flex flex-col md:flex-row gap-6 items-end justify-center w-full max-w-7xl mb-12 relative z-30 px-4 mt-20 md:mt-0">
                     {top3.map((rank, index) => {
                         // Responsive height & Styling
-                        let height = "h-auto min-h-[200px] md:min-h-[280px]";
+                        let height = "h-auto min-h-[220px] md:min-h-[300px]";
                         let order = "order-2";
                         let borderClass = "border-gray-600";
                         let shadowClass = "shadow-none";
@@ -61,7 +56,7 @@ export default function Podium({ ranking }) {
                         let bgColor = "bg-white/10"; // Light glass for default
 
                         if (index === 0) { // Gold
-                            height = "h-auto min-h-[240px] md:min-h-[350px]";
+                            height = "h-auto min-h-[260px] md:min-h-[380px]";
                             order = "order-1 md:order-2";
                             scale = "scale-100 md:scale-110 z-30 opacity-100";
                             borderClass = "border-yellow-400";
@@ -99,9 +94,17 @@ export default function Podium({ ranking }) {
                                         {trophy}
                                     </div>
 
-                                    <div className="text-center w-full mt-4 flex-1 flex flex-col justify-end">
+                                    <div className="text-center w-full mt-2 flex-1 flex flex-col justify-end items-center">
+                                        {/* LOGO ADDITION */}
+                                        <img
+                                            src={`/logos/${rank.id}.png`}
+                                            alt={rank.name}
+                                            className="w-16 h-16 md:w-20 md:h-20 object-contain mb-2 drop-shadow-md"
+                                            onError={(e) => e.target.style.display = 'none'}
+                                        />
+
                                         <div className="text-xs font-mono text-gray-400 mb-1 uppercase tracking-widest">PLATZ {index + 1}</div>
-                                        <h2 className={`text-2xl md:text-3xl font-black truncate ${textGlow} uppercase tracking-tight mb-2`}>{rank.name}</h2>
+                                        <h2 className={`text-xl md:text-2xl font-black leading-tight ${textGlow} uppercase tracking-tight mb-2`}>{rank.name}</h2>
 
                                         <div className="text-sm md:text-lg font-mono text-white/90 border-y border-white/10 py-2 w-full bg-black/20 rounded">
                                             Score: <span className="text-white font-bold">{rank.totalScore}</span>
@@ -132,9 +135,10 @@ export default function Podium({ ranking }) {
                 {/* Rest of the list */}
                 <div className="w-full max-w-4xl grid grid-cols-1 gap-2 relative z-20 px-4 pb-20">
                     {rest.map((rank, i) => (
-                        <div key={rank.id} className="bg-black/60 border border-gray-700 hover:border-gray-500 p-4 flex items-center justify-between backdrop-blur-sm transition-colors rounded">
+                        <div key={rank.id} className="bg-black/60 border border-gray-700 hover:border-gray-500 p-4 flex items-center justify-between backdrop-blur-sm transition-colors rounded group">
                             <div className="flex items-center gap-4">
                                 <span className="text-gray-500 font-mono text-xl">#{i + 4}</span>
+                                <img src={`/logos/${rank.id}.png`} alt={rank.name} className="w-8 h-8 object-contain opacity-70 group-hover:opacity-100 transition-opacity" onError={(e) => e.target.style.display = 'none'} />
                                 <span className="text-xl font-bold font-mono text-cyan-300">{rank.name}</span>
                             </div>
                             <div className="font-mono text-gray-400">Score: {rank.totalScore}</div>
