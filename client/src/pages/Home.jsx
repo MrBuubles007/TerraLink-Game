@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import { GlassCard } from '../components/ui/GlassCard';
 
 import AnimatedLogo from '../components/ui/AnimatedLogo';
-
-import FullScreenButton from '../components/ui/FullScreenButton';
 
 export default function Home() {
     const [name, setName] = useState('');
@@ -43,12 +41,9 @@ export default function Home() {
                 </form>
 
                 <div className="mt-8 border-t border-white/10 pt-4">
-                    <a href="/admin" className="text-xs text-gray-500 hover:text-gray-300">Admin Login</a>
+                    <Link to="/admin" className="text-xs text-gray-500 hover:text-gray-300">Admin Login</Link>
                 </div>
             </GlassCard>
-
-            {/* Universal Fullscreen Button */}
-            <FullScreenButton />
         </div>
     );
 }
