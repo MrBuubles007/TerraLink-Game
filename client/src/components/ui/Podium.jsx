@@ -56,7 +56,8 @@ export default function Podium({ ranking }) {
                 <div className="flex flex-col md:flex-row gap-6 items-end justify-center w-full max-w-7xl mb-12 relative z-30 px-4 mt-20 md:mt-0">
                     {top3.map((rank, index) => {
                         // Responsive height & Styling
-                        let height = "h-auto min-h-[220px] md:min-h-[300px]";
+                        // DEFAULT (Silver/Bronze) - Reduced height for better contrast
+                        let height = "h-auto min-h-[200px] md:min-h-[250px]";
                         let order = "order-2";
                         let borderClass = "border-gray-600";
                         let shadowClass = "shadow-none";
@@ -66,8 +67,8 @@ export default function Podium({ ranking }) {
                         let trophy = "🥈";
                         let bgColor = "bg-white/10"; // Light glass for default
 
-                        if (index === 0) { // Gold
-                            height = "h-auto min-h-[260px] md:min-h-[380px]";
+                        if (index === 0) { // Gold - Significantly taller
+                            height = "h-auto min-h-[280px] md:min-h-[420px]";
                             order = "order-1 md:order-2";
                             scale = "scale-100 md:scale-110 z-30 opacity-100";
                             borderClass = "border-yellow-400";
@@ -100,7 +101,7 @@ export default function Podium({ ranking }) {
                                     <div className="absolute inset-0 bg-[url('https://media.giphy.com/media/dummy/giphy.gif')] opacity-5 pointer-events-none rounded-xl overflow-hidden"></div>
 
                                     {/* Trophy Icon - Adjusted position to not be cut off */}
-                                    <div className="absolute -top-10 left-[45%] transform -translate-x-1/2 text-6xl md:text-7xl animate-bounce filter drop-shadow-lg"
+                                    <div className="absolute -top-10 left-[35%] transform -translate-x-1/2 text-6xl md:text-7xl animate-bounce filter drop-shadow-lg"
                                         style={{ animationDelay: `${index * 0.2}s`, zIndex: 40 }}>
                                         {trophy}
                                     </div>

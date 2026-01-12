@@ -253,18 +253,23 @@ function gameLoopNext() {
                     const effect = option.customEffects?.[team.id] || option.effect;
 
                     // RELATIVE PERCENTAGE LOGIC
-                    // We interpret 'cost' as a score where ~50 is a significant hit. 
-                    // Dividing by 5 gives the percentage (e.g. 50/5 = 10%).
-                    let percentageLoss = effect.cost / 5;
+                    // We interpret 'cost' as a score. Old: /5 (too harsh). New: /20.
+                    // Example: Cost 100 => 5% Capital Loss. Cost 20 => 1% Capital Loss.
+                    let percentageLoss = effect.cost / 20;
 
                     let actualCost = 0;
                     if (typeof team.capital === 'number') {
                         actualCost = (team.capital * percentageLoss) / 100;
 
-                        // CAP LOGIC: Max +/- 20 (Unit agnostic, effectively Billion/Million based on context)
-                        // User requested: "nicht mehr als ungefähr als 20 Milliarden Euro verlieren"
-                        if (actualCost > 20) actualCost = 20;
-                        if (actualCost < -20) actualCost = -20;
+                        // ADD VARIANCE: +/- 20% randomness to the result
+                        // This ensures that even with the same event, the number is slightly different each time.
+                        const variance = 0.8 + (Math.random() * 0.4); // 0.8 to 1.2
+                        actualCost *= variance;
+
+                        // CAP LOGIC: Relaxed Cap
+                        // Old: 20 Mrd. New: 50 Mrd (allows rare disasters, but usually formula keeps it lower)
+                        if (actualCost > 50) actualCost = 50;
+                        if (actualCost < -50) actualCost = -50;
 
                         team.capital -= actualCost;
                         // Precision handling
@@ -298,6 +303,8 @@ function gameLoopNext() {
                     // Clamp Market Share (Double check) & Floor at 2% if they had >2% before
                     // User Request: Never drop below 2% (insolvency protection)
                     if (team.marketShare < 2) team.marketShare = 2;
+                    // User Request: Never exceed 100% (monopoly cap)
+                    if (team.marketShare > 100) team.marketShare = 100;
 
                     // Round to 1 decimal
                     team.marketShare = Math.round(team.marketShare * 10) / 10;
