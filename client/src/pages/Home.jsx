@@ -5,6 +5,8 @@ import { GlassCard } from '../components/ui/GlassCard';
 
 import AnimatedLogo from '../components/ui/AnimatedLogo';
 
+import FullScreenButton from '../components/ui/FullScreenButton';
+
 export default function Home() {
     const [name, setName] = useState('');
     const { joinGame } = useGame();
@@ -44,6 +46,9 @@ export default function Home() {
                     <a href="/admin" className="text-xs text-gray-500 hover:text-gray-300">Admin Login</a>
                 </div>
             </GlassCard>
+
+            {/* Universal Fullscreen Button */}
+            <FullScreenButton />
         </div>
     );
 }
