@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import { GlassCard } from '../components/ui/GlassCard';
+import Podium from '../components/ui/Podium';
 import { TEAMS, EVENTS } from '../data/initialData';
 
 export default function Whiteboard() {
