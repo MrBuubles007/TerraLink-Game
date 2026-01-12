@@ -49,63 +49,78 @@ export default function Podium({ ranking }) {
 
                 <div className="flex flex-col md:flex-row gap-6 items-end justify-center w-full max-w-7xl mb-12 relative z-20 px-4">
                     {top3.map((rank, index) => {
-                        let height = "md:h-96 h-auto min-h-[200px]"; // Responsive height
+                        // Responsive height & Styling
+                        let height = "h-auto min-h-[200px] md:min-h-[280px]";
                         let order = "order-2";
-                        // Cyberpunk Styling
                         let borderClass = "border-gray-600";
                         let shadowClass = "shadow-none";
                         let textGlow = "text-gray-400";
-                        let scale = "scale-100 opacity-80 hover:opacity-100 hover:scale-105";
+                        let scale = "scale-90 opacity-90 md:scale-100 hover:scale-95 md:hover:scale-105";
                         let zIndex = "z-10";
                         let trophy = "🥈";
+                        let bgColor = "bg-white/10"; // Light glass for default
 
-                        // Logic for position
-                        if (index === 0) { // Gold / 1st
-                            height = "md:h-[30rem] h-auto min-h-[240px]";
+                        if (index === 0) { // Gold
+                            height = "h-auto min-h-[240px] md:min-h-[350px]";
                             order = "order-1 md:order-2";
                             scale = "scale-100 md:scale-110 z-30 opacity-100";
                             borderClass = "border-yellow-400";
                             shadowClass = "shadow-[0_0_50px_rgba(250,204,21,0.5),inset_0_0_20px_rgba(250,204,21,0.2)]";
                             textGlow = "text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]";
                             trophy = "👑";
-                        } else if (index === 1) { // Silver / 2nd
+                            bgColor = "bg-black/80"; // Darker for contrast
+                        } else if (index === 1) { // Silver
                             order = "order-2 md:order-1";
                             borderClass = "border-slate-300";
                             shadowClass = "shadow-[0_0_30px_rgba(203,213,225,0.3)]";
                             textGlow = "text-slate-300";
-                        } else if (index === 2) { // Bronze / 3rd
-                            order = "order-3 md:order-3";
+                        } else if (index === 2) { // Bronze
+                            order = "order-3";
                             borderClass = "border-orange-600";
                             shadowClass = "shadow-[0_0_30px_rgba(234,88,12,0.3)]";
                             textGlow = "text-orange-500";
                             trophy = "🥉";
                         }
 
+                        // Fix Logic: Only show + if > 0.
+                        const capPrefix = rank.capitalGrowth > 0 ? "+" : "";
+                        const mktPrefix = rank.marketGrowth > 0 ? "+" : "";
+
                         return (
-                            <div key={rank.id} className={`${order} ${scale} ${zIndex} transition-all duration-500 w-full md:w-auto`}>
-                                <div className={`flex flex-col items-center justify-end ${height} w-full md:w-64 bg-black/80 backdrop-blur-xl border-4 ${borderClass} ${shadowClass} relative group overflow-hidden rounded-xl md:rounded-none md:rounded-t-3xl p-4 md:p-6`}>
+                            <div key={rank.id} className={`${order} ${scale} ${zIndex} transition-all duration-500 w-full md:w-64 flex flex-col justify-end`}>
+                                <div className={`flex flex-col items-center relative ${height} w-full ${bgColor} backdrop-blur-xl border-4 ${borderClass} ${shadowClass} group overflow-visible rounded-xl p-4 pt-12 md:pt-16`}>
 
-                                    {/* Scanline Effect overlay on card */}
-                                    <div className="absolute inset-0 bg-[url('https://media.giphy.com/media/dummy/giphy.gif')] opacity-5 pointer-events-none"></div>
+                                    {/* Scanline Effect */}
+                                    <div className="absolute inset-0 bg-[url('https://media.giphy.com/media/dummy/giphy.gif')] opacity-5 pointer-events-none rounded-xl overflow-hidden"></div>
 
-                                    <div className="md:absolute -top-12 text-5xl md:text-7xl animate-bounce mb-2 md:mb-0" style={{ animationDelay: `${index * 0.2}s` }}>
+                                    {/* Trophy Icon - Adjusted position to not be cut off */}
+                                    <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 text-6xl md:text-7xl animate-bounce filter drop-shadow-lg"
+                                        style={{ animationDelay: `${index * 0.2}s`, zIndex: 40 }}>
                                         {trophy}
                                     </div>
 
-                                    <div className={`text-center mt-2 md:mt-12 mb-4 w-full px-2`}>
-                                        <div className="text-xs font-mono text-gray-500 mb-1">RANK_0{index + 1}</div>
-                                        <h2 className={`text-xl md:text-3xl font-bold truncate ${textGlow} uppercase tracking-widest`}>{rank.name}</h2>
-                                        <div className="text-lg md:text-xl font-mono text-white mt-2 border-t border-b border-gray-700 py-1 inline-block">Score: {rank.totalScore}</div>
+                                    <div className="text-center w-full mt-4 flex-1 flex flex-col justify-end">
+                                        <div className="text-xs font-mono text-gray-400 mb-1 uppercase tracking-widest">PLATZ {index + 1}</div>
+                                        <h2 className={`text-2xl md:text-3xl font-black truncate ${textGlow} uppercase tracking-tight mb-2`}>{rank.name}</h2>
+
+                                        <div className="text-sm md:text-lg font-mono text-white/90 border-y border-white/10 py-2 w-full bg-black/20 rounded">
+                                            Score: <span className="text-white font-bold">{rank.totalScore}</span>
+                                        </div>
                                     </div>
 
-                                    <div className="w-full bg-black/90 p-3 rounded text-xs font-mono space-y-2 border-t border-gray-700">
-                                        <div className="flex justify-between text-green-400">
-                                            <span>$$$ GROWTH</span>
-                                            <span>+{formatNumber(rank.capitalGrowth)}%</span>
+                                    {/* Detailed Stats */}
+                                    <div className="w-full mt-4 bg-black/50 p-3 rounded-lg text-xs font-mono space-y-2 border border-white/10">
+                                        <div className="flex justify-between items-center text-gray-300">
+                                            <span className="uppercase text-[10px]">Kapital</span>
+                                            <span className={rank.capitalGrowth >= 0 ? "text-green-400 font-bold" : "text-red-400 font-bold"}>
+                                                {capPrefix}{formatNumber(rank.capitalGrowth)}%
+                                            </span>
                                         </div>
-                                        <div className="flex justify-between text-cyan-400">
-                                            <span>MKT CHANGE</span>
-                                            <span>+{formatNumber(rank.marketGrowth)}%</span>
+                                        <div className="flex justify-between items-center text-gray-300">
+                                            <span className="uppercase text-[10px]">Marktanteil</span>
+                                            <span className={rank.marketGrowth >= 0 ? "text-blue-400 font-bold" : "text-red-400 font-bold"}>
+                                                {mktPrefix}{formatNumber(rank.marketGrowth)}%
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
