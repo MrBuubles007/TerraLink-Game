@@ -73,7 +73,7 @@ export default function FullScreenButton() {
         <button
             onClick={toggleFullscreen}
             className={`
-                fixed bottom-4 left-4 z-50 
+                fixed bottom-20 left-4 z-50 
                 flex items-center justify-center
                 w-12 h-12 md:w-14 md:h-14
                 bg-black/40 backdrop-blur-md
