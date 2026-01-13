@@ -5,6 +5,7 @@ import Lobby from './pages/Lobby';
 import PlayerGame from './pages/PlayerGame';
 import Admin from './pages/Admin';
 import Whiteboard from './pages/Whiteboard';
+import Brochure from './pages/Brochure';
 
 import CyberpunkBackground from './components/ui/CyberpunkBackground';
 import Footer from './components/layout/Footer';
@@ -26,6 +27,7 @@ function AppContent() {
           <Route path="/game" element={<PlayerGame />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/whiteboard" element={<Whiteboard />} />
+          <Route path="/broschuere" element={<Brochure />} />
         </Routes>
       </LandscapeGuard>
 
